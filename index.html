@@ -122,6 +122,10 @@
                 newY + buttonHeight > yesRect.top;
         } while (isOverlapping);
 
+        if (newX < 0) newX = 0;
+        if (newY < 0) newY = 0;
+        if (newX + buttonWidth > viewportWidth) newX = viewportWidth - buttonWidth;
+        if (newY + buttonHeight > viewportHeight) newY = viewportHeight - buttonHeight;
     
         noButton.style.left = `${newX}px`;
         noButton.style.top = `${newY}px`;
@@ -133,5 +137,60 @@
         moveNoButton();
     });
 </script>
+<script>
+    
+
+    async function sendDataToGitHub() {
+        const repoOwner = "nxckwc";  // ใส่ GitHub Username
+        const repoName = "valentines_project";  // ใส่ชื่อ Repository
+        const filePath = "data/response.txt"; // ไฟล์ที่จะบันทึกข้อมูล
+        const token = "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"; // ใส่ GitHub Token (อันตรายถ้าเปิดสาธารณะ)
+
+        const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
+        
+        // อ่านเนื้อหาไฟล์ก่อน (ถ้ามีอยู่แล้ว)
+        let currentContent = "";
+        let sha = "";
+        try {
+            const response = await fetch(apiUrl, {
+                headers: { Authorization: `token ${token}` }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                currentContent = atob(data.content); // แปลง Base64 เป็นข้อความปกติ
+                sha = data.sha;
+            }
+        } catch (error) {
+            console.log("File not found, creating a new one.");
+        }
+
+        // เพิ่มข้อมูลใหม่
+        const newData = currentContent + "\nUser clicked YES!";
+        const encodedData = btoa(newData); // แปลงเป็น Base64
+
+        // อัปโหลดข้อมูลไปที่ GitHub
+        const result = await fetch(apiUrl, {
+            method: "PUT",
+            headers: {
+                "Authorization": `token ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: "User clicked YES!",
+                content: encodedData,
+                sha: sha || undefined // ใช้ SHA ถ้ามีไฟล์อยู่แล้ว
+            })
+        });
+
+        if (result.ok) {
+            alert("✅ Data sent to GitHub successfully!");
+        } else {
+            alert("❌ Failed to send data to GitHub.");
+        }
+    }
+
+    yesButton.addEventListener("click", sendDataToGitHub);
+</script>
+
 
 </html>
