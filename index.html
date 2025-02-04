@@ -9,24 +9,107 @@
             background-color: #FFC0CB;
             
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            position: relative;
+            overflow: hidden;
         }
         h1 {
+            margin-top: 0px;
             font-family: cursive;
             font-size: 3rem;
             color: #ffffff;
         }
         img {
             display: block;
-            width: 150px;
+            width: 250px;
+            margin-bottom: 20px;
+        }
+        .buttons {
+            display: flex;
+            gap: 500x; /* ระยะห่างระหว่างปุ่ม */
+            position: relative;
+        }
+
+        button {
+            
+            font-family: sans-serif;
+            padding: 15px 25px;
+            font-size: 2rem;
+            background-color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: absolute;
+        }
+        button:hover {
+            background-color: #b1b1b1; /* เปลี่ยนสีเมื่อวางเมาส์ */
+        }
+        #no {
+            position: absolute;
+        }
+        #yes {
+            
         }
     </style>
 </head>
 <body>
     <img src="https://media.tenor.com/fYg91qBpDdgAAAAi/bongo-cat-transparent.gif" alt="Bongo Cat">
     <h1>Will you be my valentine ??</h1>
+
+    <div class="buttons">
+        <button id="yes" style="right: 150px;">yes</button>
+        <button id="no" style="left: 150px;">no</button>
+    </div>
 </body>
+
+<script>
+    const noButton = document.getElementById("no");
+    let lastX = 0;
+    let lastY = 0;
+
+    function moveNoButton() {
+        const rect = noButton.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const moveDistance = 300; 
+        const margin = 50; 
+
+        let newX, newY;
+        let attempts = 0;
+
+        do {
+            newX = rect.left + (Math.random() * moveDistance * 2 - moveDistance);
+            newY = rect.top + (Math.random() * moveDistance * 2 - moveDistance);
+        } while (Math.abs(newX - lastX) < 20 && Math.abs(newY - lastY) < 20 && attempts++ < 10);
+
+        if (newX < margin) newX = rect.left + moveDistance;
+        if (newX > viewportWidth - noButton.offsetWidth - margin) newX = rect.left - moveDistance;
+        if (newY < margin) newY = rect.top + moveDistance;
+        if (newY > viewportHeight - noButton.offsetHeight - margin) newY = rect.top - moveDistance;
+
+        if (newX < margin && newY > viewportHeight - noButton.offsetHeight - margin) {
+            newX = rect.left + moveDistance;
+            newY = rect.top - moveDistance;
+        }
+
+        noButton.style.position = "fixed";
+        noButton.style.left = `${newX}px`;
+        noButton.style.top = `${newY}px`;
+
+        lastX = newX;
+        lastY = newY;
+    }
+
+    noButton.addEventListener("mouseenter", moveNoButton);
+    noButton.addEventListener("touchstart", function (event) {
+        event.preventDefault(); // ป้องกันไม่ให้เกิดการคลิก
+        moveNoButton();
+    });
+</script>
+
 </html>
