@@ -138,58 +138,58 @@
     
 
     async function sendDataToGitHub() {
-        const repoOwner = "nxckwc";  // Your GitHub Username
-        const repoName = "valentines_project";  // Your Repository Name
-        const filePath = "data/response.txt";  // File to store responses
-        const token = "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";  // Replace with your PAT (DO NOT SHARE)
-        
+        const repoOwner = "nxckwc";  // GitHub Username
+        const repoName = "valentines_project";  // Repository Name
+        const filePath = "data/response.txt";  // File path (assumed to exist)
+        const token = "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";  // Temporary token for testing
+    
         const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
 
-    // Fetch current file content (to get SHA)
-        let currentContent = "";
-        let sha = "";
-
         try {
+        // ดึงข้อมูลไฟล์ปัจจุบันเพื่อเอา SHA
             const response = await fetch(apiUrl, {
-                headers: { Authorization: `Bearer ${token}` }  // Use Bearer for security
+                headers: { Authorization: `token ${token}` }
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                currentContent = atob(data.content);  // Decode Base64 content
-                sha = data.sha;  // Get SHA for updating file
+            if (!response.ok) {
+                throw new Error("❌ Cannot access the file (Make sure it exists)");
+            }
+
+            const data = await response.json();
+            const currentContent = atob(data.content);  // แปลง Base64 เป็นข้อความปกติ
+            const sha = data.sha;  // ใช้ SHA ในการอัปเดตไฟล์
+
+        // เพิ่มข้อมูลใหม่
+            const newData = currentContent + "\nUser clicked YES! - " + new Date().toLocaleString();
+            const encodedData = btoa(newData);  // แปลงเป็น Base64
+
+        // อัปโหลดข้อมูลที่อัปเดตกลับไปที่ GitHub
+            const result = await fetch(apiUrl, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `token ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: "User clicked YES!",
+                    content: encodedData,
+                    sha: sha  // ต้องมี SHA เสมอ (ไม่สร้างไฟล์ใหม่)
+                })
+            });
+
+            if (result.ok) {
+                alert("✅ Data sent to GitHub successfully!");
+            } else {
+                alert("❌ Failed to send data to GitHub.");
             }
         } catch (error) {
-            console.log("No existing file found. Creating a new one.");
-        }
-
-    // Append new data
-        const newData = currentContent + "\nUser clicked YES! - " + new Date().toLocaleString();
-        const encodedData = btoa(newData);  // Encode to Base64
-
-    // Upload new content to GitHub
-        const result = await fetch(apiUrl, {
-            method: "PUT",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                message: "User clicked YES!",
-                content: encodedData,
-                sha: sha || undefined  // Include SHA if updating
-            })
-        });
-
-        if (result.ok) {
-            alert("✅ Data sent to GitHub successfully!");
-        } else {
-            alert("❌ Failed to send data to GitHub.");
-        }
+            console.error("Error:", error);
+            alert("❌ Error: " + error.message);
+        }   
     }
 
-// Add event listener to Yes button
     yesButton.addEventListener("click", sendDataToGitHub);
+
 </script>
 
 
