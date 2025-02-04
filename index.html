@@ -134,63 +134,28 @@
         moveNoButton();
     });
 </script>
+
 <script>
-    
+    async function sendDataToGoogleSheets() {
+        const sheetUrl = "https://script.google.com/macros/s/AKfycbzAkDtb94223p8XcUaMwPxJUrUvFrl7z-Oymt59Mjwm6y-EAJWIMbljXimhhz6Ojnt4/exec"; // Replace with your actual Web App URL
 
-    async function sendDataToGitHub() {
-        const repoOwner = "nxckwc";  // GitHub Username
-        const repoName = "valentines_project";  // Repository Name
-        const filePath = "data/response.txt";  // File path (assumed to exist)
-        const token = "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";  // Temporary token for testing
-    
-        const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
+        const data = { response: "User clicked YES!" };
 
-        try {
-        // ดึงข้อมูลไฟล์ปัจจุบันเพื่อเอา SHA
-            const response = await fetch(apiUrl, {
-                headers: { Authorization: `token ${token}` }
-            });
+        const result = await fetch(sheetUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
 
-            if (!response.ok) {
-                throw new Error("❌ Cannot access the file (Make sure it exists)");
-            }
-
-            const data = await response.json();
-            const currentContent = atob(data.content);  // แปลง Base64 เป็นข้อความปกติ
-            const sha = data.sha;  // ใช้ SHA ในการอัปเดตไฟล์
-
-        // เพิ่มข้อมูลใหม่
-            const newData = currentContent + "\nUser clicked YES! - " + new Date().toLocaleString();
-            const encodedData = btoa(newData);  // แปลงเป็น Base64
-
-        // อัปโหลดข้อมูลที่อัปเดตกลับไปที่ GitHub
-            const result = await fetch(apiUrl, {
-                method: "PUT",
-                headers: {
-                    "Authorization": `token ${token}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    message: "User clicked YES!",
-                    content: encodedData,
-                    sha: sha  // ต้องมี SHA เสมอ (ไม่สร้างไฟล์ใหม่)
-                })
-            });
-
-            if (result.ok) {
-                alert("✅ Data sent to GitHub successfully!");
-            } else {
-                alert("❌ Failed to send data to GitHub.");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("❌ Error: " + error.message);
-        }   
+        if (result.ok) {
+            alert("✅ Data sent successfully!");
+        } else {
+            alert("❌ Failed to send data.");
+        }
     }
 
-    yesButton.addEventListener("click", sendDataToGitHub);
+    yesButton.addEventListener("click", sendDataToGoogleSheets);
 
 </script>
-
 
 </html>
