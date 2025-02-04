@@ -137,7 +137,7 @@
 
 <script>
     async function sendDataToGoogleSheets() {
-        const sheetUrl = "https://script.google.com/macros/s/AKfycbwb6ukWge8hwSGm3eAQ_YDsb93-fiwLrkGMxdGv6CcCZZv04O03AqRDH4R4pZr4siJ7/exec"; // Replace with your actual Web App URL
+        const sheetUrl = "YOUR_WEB_APP_URL"; // ใช้ URL ใหม่ที่ Deploy ล่าสุด
 
         const data = { response: "User clicked YES!" };
 
@@ -145,14 +145,12 @@
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
+            mode: "no-cors" // เพิ่มโหมดนี้
         });
 
-        if (result.ok) {
-            alert("✅ Data sent successfully!");
-        } else {
-            alert("❌ Failed to send data.");
-        }
+        alert("✅ Request sent! (CORS may block response)");
     }
+
 
     yesButton.addEventListener("click", sendDataToGoogleSheets);
 
