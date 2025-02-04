@@ -100,6 +100,7 @@
     const noButton = document.getElementById('no');
     const yesButton = document.getElementById("yes");
 
+
     function moveNoButton() {
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
@@ -189,7 +190,9 @@
         }
     }
 
-    yesButton.addEventListener("click", sendDataToGitHub);
+    yesButton.addEventListener("click", sendDataToGitHub, function() {
+    window.location.href = "success.html";  // เปลี่ยนหน้าไป success.html
+    });
 </script>
 
 
