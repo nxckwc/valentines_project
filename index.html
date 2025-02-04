@@ -7,53 +7,82 @@
     <style>
         body {
             background-color: #FFC0CB;
-            
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            position: relative;
             overflow: hidden;
+            text-align: center;
         }
+
         h1 {
-            margin-top: 0px;
             font-family: cursive;
-            font-size: 3rem;
+            font-size: 2.5rem;
             color: #ffffff;
-        }
-        img {
-            display: block;
-            width: 250px;
             margin-bottom: 20px;
         }
+
+        img {
+            width: 200px;
+            margin-bottom: 20px;
+        }
+
         .buttons {
             display: flex;
-            gap: 500x; /* ระยะห่างระหว่างปุ่ม */
-            position: relative;
+            justify-content: center;
+            gap: 50px;
         }
 
         button {
-            
             font-family: sans-serif;
             padding: 15px 25px;
-            font-size: 2rem;
+            font-size: 1.8rem;
             background-color: #ffffff;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
             transition: background-color 0.3s;
-            position: absolute;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         }
+
         button:hover {
-            background-color: #b1b1b1; /* เปลี่ยนสีเมื่อวางเมาส์ */
+            background-color: #e6e6e6;
+        }
+
+        #no {
+            position: fixed; /* เปลี่ยนจาก absolute เป็น fixed */
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            img {
+                width: 150px;
+            }
+
+            .buttons {
+                flex-direction: column;
+                gap: 20px;
+                align-items: center;
+            }
         }
         #no {
-            position: absolute;
+            position: fixed;
+            left: 60%;
+            top: 75%;
+            transition: left 0.3s ease, top 0.3s ease;
         }
         #yes {
-            
+            position: fixed;
+            right: 60%;
+            top: 70%;
         }
     </style>
 </head>
@@ -62,52 +91,45 @@
     <h1>Will you be my valentine ??</h1>
 
     <div class="buttons">
-        <button id="yes" style="right: 150px;">yes</button>
-        <button id="no" style="left: 150px;">no</button>
+        <button id="yes">yes</button>
+        <button id="no">no</button>
     </div>
 </body>
 
 <script>
-    const noButton = document.getElementById("no");
-    let lastX = 0;
-    let lastY = 0;
+    const noButton = document.getElementById('no');
+    const yesButton = document.getElementById("yes");
 
     function moveNoButton() {
-        const rect = noButton.getBoundingClientRect();
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
-        const moveDistance = 300; 
-        const margin = 50; 
+        const buttonWidth = noButton.offsetWidth;
+        const buttonHeight = noButton.offsetHeight;
+        const yesRect = yesButton.getBoundingClientRect();
 
-        let newX, newY;
-        let attempts = 0;
+        //let newX = Math.random() * (viewportWidth - buttonWidth);
+        //let newY = Math.random() * (viewportHeight - buttonHeight);
 
+        let isOverlapping;
         do {
-            newX = rect.left + (Math.random() * moveDistance * 2 - moveDistance);
-            newY = rect.top + (Math.random() * moveDistance * 2 - moveDistance);
-        } while (Math.abs(newX - lastX) < 20 && Math.abs(newY - lastY) < 20 && attempts++ < 10);
+            newX = Math.random() * (viewportWidth - buttonWidth);
+            newY = Math.random() * (viewportHeight - buttonHeight);
 
-        if (newX < margin) newX = rect.left + moveDistance;
-        if (newX > viewportWidth - noButton.offsetWidth - margin) newX = rect.left - moveDistance;
-        if (newY < margin) newY = rect.top + moveDistance;
-        if (newY > viewportHeight - noButton.offsetHeight - margin) newY = rect.top - moveDistance;
+            isOverlapping =
+                newX < yesRect.right &&
+                newX + buttonWidth > yesRect.left &&
+                newY < yesRect.bottom &&
+                newY + buttonHeight > yesRect.top;
+        } while (isOverlapping);
 
-        if (newX < margin && newY > viewportHeight - noButton.offsetHeight - margin) {
-            newX = rect.left + moveDistance;
-            newY = rect.top - moveDistance;
-        }
-
-        noButton.style.position = "fixed";
+    
         noButton.style.left = `${newX}px`;
         noButton.style.top = `${newY}px`;
-
-        lastX = newX;
-        lastY = newY;
     }
 
-    noButton.addEventListener("mouseenter", moveNoButton);
-    noButton.addEventListener("touchstart", function (event) {
-        event.preventDefault(); // ป้องกันไม่ให้เกิดการคลิก
+    noButton.addEventListener("mouseover", moveNoButton);
+    noButton.addEventListener("touchstart", (event) => {
+        event.preventDefault();
         moveNoButton();
     });
 </script>
