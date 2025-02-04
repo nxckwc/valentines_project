@@ -138,44 +138,46 @@
     
 
     async function sendDataToGitHub() {
-        const repoOwner = "nxckwc";  // ใส่ GitHub Username
-        const repoName = "valentines_project";  // ใส่ชื่อ Repository
-        const filePath = "data/response.txt"; // ไฟล์ที่จะบันทึกข้อมูล
-        const token = "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"; // ใส่ GitHub Token (อันตรายถ้าเปิดสาธารณะ)
+        const repoOwner = "nxckwc";  // Your GitHub Username
+        const repoName = "valentines_project";  // Your Repository Name
+        const filePath = "data/response.txt";  // File to store responses
+        const token = "YOUR_GITHUB_TOKEN_HERE";  // Replace with your PAT (DO NOT SHARE)
 
         const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
-        
-        // อ่านเนื้อหาไฟล์ก่อน (ถ้ามีอยู่แล้ว)
+
+    // Fetch current file content (to get SHA)
         let currentContent = "";
         let sha = "";
+
         try {
             const response = await fetch(apiUrl, {
-                headers: { Authorization: `token ${token}` }
+                headers: { Authorization: `Bearer ${token}` }  // Use Bearer for security
             });
+
             if (response.ok) {
                 const data = await response.json();
-                currentContent = atob(data.content); // แปลง Base64 เป็นข้อความปกติ
-                sha = data.sha;
+                currentContent = atob(data.content);  // Decode Base64 content
+                sha = data.sha;  // Get SHA for updating file
             }
         } catch (error) {
-            console.log("File not found, creating a new one.");
+            console.log("No existing file found. Creating a new one.");
         }
 
-        // เพิ่มข้อมูลใหม่
-        const newData = currentContent + "\nUser clicked YES!";
-        const encodedData = btoa(newData); // แปลงเป็น Base64
+    // Append new data
+        const newData = currentContent + "\nUser clicked YES! - " + new Date().toLocaleString();
+        const encodedData = btoa(newData);  // Encode to Base64
 
-        // อัปโหลดข้อมูลไปที่ GitHub
+    // Upload new content to GitHub
         const result = await fetch(apiUrl, {
             method: "PUT",
             headers: {
-                "Authorization": `token ${token}`,
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 message: "User clicked YES!",
                 content: encodedData,
-                sha: sha || undefined // ใช้ SHA ถ้ามีไฟล์อยู่แล้ว
+                sha: sha || undefined  // Include SHA if updating
             })
         });
 
@@ -186,9 +188,8 @@
         }
     }
 
-    yesButton.addEventListener("click", sendDataToGitHub, function() {
-    window.location.href = "success.html";  // เปลี่ยนหน้าไป success.html
-    });
+// Add event listener to Yes button
+    yesButton.addEventListener("click", sendDataToGitHub);
 </script>
 
 
