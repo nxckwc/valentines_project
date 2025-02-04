@@ -80,6 +80,31 @@
             right: 57%;
             top: 67%;
         }
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: black; /* พื้นหลังสีดำ */
+            display: none; /* ซ่อนก่อน */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-circle {
+            width: 20px;
+            height: 20px;
+            
+            border-radius: 50%; /* ทำให้เป็นวงกลม */
+            animation: pixelSpin 1s steps(4) infinite; /* หมุนเป็น Pixel */
+        }
+
+        @keyframes pixelSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
     </style>
 </head>
 <body>
@@ -93,6 +118,11 @@
 </body>
 
 <script>
+    
+    <div id="loadingScreen">
+        <div class="loading-circle"></div>
+    </div>
+
     const noButton = document.getElementById('no');
     const yesButton = document.getElementById("yes");
 
@@ -140,6 +170,14 @@
         const sheetUrl = "https://script.google.com/macros/s/AKfycbwb6ukWge8hwSGm3eAQ_YDsb93-fiwLrkGMxdGv6CcCZZv04O03AqRDH4R4pZr4siJ7/exec"; // ใช้ URL ใหม่ที่ Deploy ล่าสุด
 
         const data = { response: "User clicked YES!" };
+
+        document.body.innerHTML = "";
+
+        const loadingDiv = document.createElement("div");
+        loadingDiv.id = "loadingScreen";
+        loadingDiv.innerHTML = '<div class="loading-circle"></div>';
+        document.body.appendChild(loadingDiv);
+        document.getElementById("loadingScreen").style.display = "flex";
 
         const result = await fetch(sheetUrl, {
             method: "POST",
