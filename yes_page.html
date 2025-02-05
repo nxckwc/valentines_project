@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <title>💖 Yes! 💖</title>
     <style>
         body {
@@ -18,19 +17,201 @@
             font-family: cursive;
             color: white;
             text-align: center;
+            overflow: hidden;
         }
         h1 {
-            font-family: 'pixelify sans';
+            font-family: 'Pixelify Sans', sans-serif;
             font-size: 3rem;
         }
         img {
             width: 200px;
             margin-top: 20px;
         }
+        .rectangle-button {
+            font-family: 'Pixelify Sans', sans-serif;
+            font-size: 1.5rem;
+            padding: clamp(5px, 6vw, 15px) clamp(30px, 3vw, 40px);
+            background-color: #ff8496;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            text-decoration: none;
+            display: inline-block;
+
+            position: absolute;
+            bottom: 5%;
+        }
+
+        .rectangle-button:hover {
+            background-color: #ff6d83;
+        }
+
+        /* Inline Password Screen */
+        #passwordContainer {
+            background: rgba(255, 192, 203, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            width: 80vw;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+
+        /* Password display */
+        #passwordDisplay {
+            font-family: 'Pixelify Sans', sans-serif;
+            font-size: 2.5rem;
+            padding: 15px;
+            background-color: #ff8496;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.1s ease-in-out;
+            min-width: 120px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            line-height: normal;
+        }
+
+        /* Keypad for password entry */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .key {
+            font-family: 'Pixelify Sans', sans-serif;
+            font-size: 2rem;
+            padding: 15px;
+            background-color: #ff8496;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.1s ease-in-out;
+            min-width: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            line-height: normal;
+        }
+
+        .key:hover {
+            background-color: #ff6d83;
+        }
+
+        .key:active {
+            background-color: #ff6d83;
+        }
+
+        /* Close button */
+        .close-btn {
+            background: #ff6d83;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
     <h1>luv u na jub jub</h1>
-    <img src="https://media.tenor.com/y2JXkY1pXkwAAAAC/cute.gif" alt="Happy">
+    <img src="https://media.tenor.com/bSDfFZEc7m4AAAAi/myaowl-cute.gif" alt="Happy">
+    <button id="passwordButton" class="rectangle-button">password</button>
+
+    <!-- Inline Password Entry -->
+    <div id="passwordContainer" style="display: none;">
+        <h2>Enter the Secret Code</h2>
+        <div id="passwordDisplay">••••</div>
+        <div class="keypad">
+            <button class="key" data-value="1">1</button>
+            <button class="key" data-value="2">2</button>
+            <button class="key" data-value="3">3</button>
+            <button class="key" data-value="4">4</button>
+            <button class="key" data-value="5">5</button>
+            <button class="key" data-value="6">6</button>
+            <button class="key" data-value="7">7</button>
+            <button class="key" data-value="8">8</button>
+            <button class="key" data-value="9">9</button>
+            <button class="key clear">*</button>
+            <button class="key" data-value="0">0</button>
+            
+            <button class="key enter">#</button>
+        </div>
+        <button class="close-btn">Close</button>
+    </div>
+
+    <script>
+        const passwordButton = document.getElementById("passwordButton");
+        const passwordContainer = document.getElementById("passwordContainer");
+        const closeButton = document.querySelector(".close-btn");
+        const correctPassword = "1234";
+        let enteredPassword = "";
+    
+        // Show password container
+        passwordButton.addEventListener("click", () => {
+            passwordContainer.style.display = "block"; // Show the password container
+            document.querySelector("h1").style.display = "none"; // Hide the main content
+            document.querySelector("img").style.display = "none"; // Hide the image
+            document.querySelector(".rectangle-button").style.display = "none"; // Hide the password button
+        });
+    
+        // Close password container
+        closeButton.addEventListener("click", () => {
+            passwordContainer.style.display = "none"; // Hide the password container
+            document.querySelector("h1").style.display = "block"; // Show the main content
+            document.querySelector("img").style.display = "block"; // Show the image
+            document.querySelector(".rectangle-button").style.display = "block"; // Show the password button
+            enteredPassword = "";
+            updateDisplay();
+        });
+    
+        // Handle password entry
+        document.querySelectorAll(".key").forEach(button => {
+            button.addEventListener("click", () => {
+                const value = button.dataset.value;
+    
+                if (value) {
+                    enteredPassword += value;
+                    updateDisplay();
+    
+                    // Check password once 4 digits are entered
+                    if (enteredPassword.length === 4) {
+                        checkPassword();
+                    }
+                } else if (button.classList.contains("clear")) {
+                    enteredPassword = "";
+                    updateDisplay();
+                }
+            });
+        });
+    
+        function updateDisplay() {
+            document.getElementById("passwordDisplay").textContent = 
+                enteredPassword.padEnd(4, "•");
+        }
+    
+        function checkPassword() {
+            if (enteredPassword === correctPassword) {
+                window.location.href = "next_page.html";
+            } else {
+                enteredPassword = "";
+                updateDisplay();
+            }
+        }
+    </script>
+    
 </body>
 </html>
