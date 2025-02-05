@@ -36,13 +36,14 @@
         .buttons {
             display: flex;
             justify-content: center;
-            gap: 50px;
+            gap: clamp(10px, 5vw, 50px);
         }
         
         button {
-            font-family: 'Pixelify Sans', sans-serif; /* ✅ ใช้ฟอนต์ของคุณ */
-            font-size: 2.5rem;
-            padding: 15px 30px;
+            font-family: 'Pixelify Sans', sans-serif; 
+            font-size: clamp(1rem, 5vw, 2.5rem);
+            padding: clamp(10px, 3vw, 15px) clamp(20px, 6vw, 30px);
+            
             background-color: #ff8496;
             color: white;
             border: none; /* ✅ เพิ่มเส้นขอบสีดำ */
@@ -98,7 +99,7 @@
             width: 100vw;
             height: 100vh;
             background-color: #FFC0CB;
-            display: none;
+            display: none;  /* Initially hidden */
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -108,45 +109,22 @@
         .loading-text {
             font-family: 'Press Start 2P', cursive;
             color: white;
-            font-size: 3rem;
+            font-size: clamp(2rem, 5vw, 3rem);
             margin-bottom: 20px;
+        }   
+
+
+        @keyframes dotAnimation {
+            0% { content: ""; }
+            33% { content: "."; }
+            66% { content: ".."; }
+            100% { content: "..."; }
         }
 
-        .loading-pixel-circle {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+        .dots::after {
+            content: "";
+            animation: dotAnimation 1.5s infinite steps(1);
         }
-
-        .pixel {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: #ffffff;
-            opacity: 0;
-            animation: pixelRotation 2s linear infinite;
-        }
-
-        #pixel1 { top: 0; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
-        #pixel2 { top: 14%; left: 86%; transform: translateY(-50%) translateX(-50%); animation-delay: 0.2s; }
-        #pixel3 { top: 50%; left: 100%; transform: translateY(-50%) translateX(-50%); animation-delay: 0.4s; }
-        #pixel4 { top: 86%; left: 86%; transform: translateY(-50%) translateX(-50%); animation-delay: 0.6s; }
-        #pixel5 { top: 100%; left: 50%; transform: translateY(-100%) translateX(-50%); animation-delay: 0.8s; }
-        #pixel6 { top: 86%; left: 14%; transform: translateY(-50%) translateX(-50%); animation-delay: 1s; }
-        #pixel7 { top: 50%; left: 0%; transform: translateY(-50%) translateX(-50%); animation-delay: 1.2s; }
-        #pixel8 { top: 14%; left: 14%; transform: translateY(-50%) translateX(-50%); animation-delay: 1.4s; }
-        #pixel9 { top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%); animation-delay: 1.6s; }
-        #pixel10 { top: 20%; left: 80%; transform: translateY(-50%) translateX(-50%); animation-delay: 1.8s; }
-        #pixel11 { top: 80%; left: 80%; transform: translateY(-50%) translateX(-50%); animation-delay: 2s; }
-        #pixel12 { top: 20%; left: 20%; transform: translateY(-50%) translateX(-50%); animation-delay: 2.2s; }
-
-        @keyframes pixelRotation {
-            0% { opacity: 0; transform: scale(0); }
-            50% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(0); }
-        }
-
     </style>
 </head>
 <body>
@@ -158,29 +136,15 @@
         <button id="no">no</button>
     </div>
 
-    <!-- ✅ Loading Screen ใหม่ -->
     <div id="loadingScreen">
-        <div class="loading-text">LOADING...</div>
-        <div class="loading-pixel-circle">
-            <div class="pixel" id="pixel1"></div>
-            <div class="pixel" id="pixel2"></div>
-            <div class="pixel" id="pixel3"></div>
-            <div class="pixel" id="pixel4"></div>
-            <div class="pixel" id="pixel5"></div>
-            <div class="pixel" id="pixel6"></div>
-            <div class="pixel" id="pixel7"></div>
-            <div class="pixel" id="pixel8"></div>
-            <div class="pixel" id="pixel9"></div>
-            <div class="pixel" id="pixel10"></div>
-            <div class="pixel" id="pixel11"></div>
-            <div class="pixel" id="pixel12"></div>
-        </div>
+        <div class="loading-text">LOADING<span id="dots"></span></div>
     </div>
-
+    
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const noButton = document.getElementById("no");
             const yesButton = document.getElementById("yes");
+            
 
             function moveNoButton() {
                 const viewportWidth = window.innerWidth;
@@ -213,7 +177,7 @@
                 moveNoButton();
             });
 
-            async function sendDataToGoogleSheets() {
+            async function sendYesDataToGoogleSheets() {
                 const sheetUrl = "https://script.google.com/macros/s/AKfycbwb6ukWge8hwSGm3eAQ_YDsb93-fiwLrkGMxdGv6CcCZZv04O03AqRDH4R4pZr4siJ7/exec";
                 const data = { response: "User clicked YES!" };
 
@@ -229,8 +193,55 @@
                 window.location.href = "yes_page.html";
             }
 
-            yesButton.addEventListener("click", sendDataToGoogleSheets);
+            async function sendNoDataToGoogleSheets() {
+                const sheetUrl = "https://script.google.com/macros/s/AKfycbwb6ukWge8hwSGm3eAQ_YDsb93-fiwLrkGMxdGv6CcCZZv04O03AqRDH4R4pZr4siJ7/exec";
+                const data = { response: "User clicked no :(" };
+
+                document.getElementById("loadingScreen").style.display = "flex";
+
+                await fetch(sheetUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data),
+                    mode: "no-cors"
+                });
+
+                window.location.href = "yes_page.html";
+            }
+
+            
+            document.getElementById("loadingScreen").style.display = "none";
+            noButton.addEventListener("click", sendNoDataToGoogleSheets)
+            yesButton.addEventListener("click", sendYesDataToGoogleSheets);
+
         });
+    </script>
+    <script>
+        async function sendNoDataToGoogleSheets() {
+                const sheetUrl = "https://script.google.com/macros/s/AKfycbwb6ukWge8hwSGm3eAQ_YDsb93-fiwLrkGMxdGv6CcCZZv04O03AqRDH4R4pZr4siJ7/exec";
+                const data = { response: "User clicked no :(" };
+
+                document.getElementById("loadingScreen").style.display = "flex";
+
+                await fetch(sheetUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data),
+                    mode: "no-cors"
+                });
+
+                window.location.href = "yes_page.html";
+            }
+            noButton.addEventListener("click", sendNoDataToGoogleSheets)
+    </script>
+    <script>
+        const dots = document.getElementById("dots");
+        let dotCount = 0;
+
+        setInterval(() => {
+            dotCount = (dotCount + 1) % 4; // Change from 0 to 3
+            dots.textContent = ".".repeat(dotCount);
+        }, 500);
     </script>
 </body>
 </html>
