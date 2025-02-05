@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Valentine's Gift !!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+       
         body {
             background-color: #FFC0CB;
             display: flex;
@@ -18,9 +21,10 @@
         }
 
         h1 {
-            font-family: cursive;
-            font-size: 2.5rem;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2rem;
             color: #ffffff;
+            
             margin-bottom: 20px;
         }
 
@@ -34,29 +38,32 @@
             justify-content: center;
             gap: 50px;
         }
-
+        
         button {
-            font-family: sans-serif;
-            padding: 15px 25px;
-            font-size: 1.8rem;
-            background-color: #ffffff;
-            border: none;
-            border-radius: 10px;
+            font-family: 'Pixelify Sans', sans-serif; /* ✅ ใช้ฟอนต์ของคุณ */
+            font-size: 2.5rem;
+            padding: 15px 30px;
+            background-color: #ff8496;
+            color: white;
+            border: none; /* ✅ เพิ่มเส้นขอบสีดำ */
+            border-radius: 15px; /* ✅ ให้ยังคงขอบมนเล็กน้อย */
             cursor: pointer;
-            transition: background-color 0.3s;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.1s ease-in-out;
+            min-width: 120px; /* ✅ ทำให้ปุ่มกว้างเท่ากัน */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            line-height: normal;
         }
 
         button:hover {
-            background-color: #e6e6e6;
+            background-color: #ff6d83;
         }
-
-        
-        
 
         @media (max-width: 600px) {
             h1 {
-                font-size: 2rem;
+                font-size: 1.5rem;
             }
 
             img {
@@ -69,40 +76,75 @@
                 align-items: center;
             }
         }
+
         #no {
             position: fixed;
             left: 57%;
             top: 67%;
             transition: left 0.3s ease, top 0.3s ease;
         }
+
         #yes {
             position: fixed;
             right: 57%;
             top: 67%;
         }
+
+        
         #loadingScreen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: black; /* พื้นหลังสีดำ */
-            display: none; /* ซ่อนก่อน */
+            background-color: #FFC0CB;
+            display: none;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            text-align: center;
         }
 
-        .loading-circle {
-            width: 20px;
-            height: 20px;
-            
-            border-radius: 50%; /* ทำให้เป็นวงกลม */
-            animation: pixelSpin 1s steps(4) infinite; /* หมุนเป็น Pixel */
+        .loading-text {
+            font-family: 'Press Start 2P', cursive;
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 20px;
         }
 
-        @keyframes pixelSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .loading-pixel-circle {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+
+        .pixel {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ffffff;
+            opacity: 0;
+            animation: pixelRotation 2s linear infinite;
+        }
+
+        #pixel1 { top: 0; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
+        #pixel2 { top: 14%; left: 86%; transform: translateY(-50%) translateX(-50%); animation-delay: 0.2s; }
+        #pixel3 { top: 50%; left: 100%; transform: translateY(-50%) translateX(-50%); animation-delay: 0.4s; }
+        #pixel4 { top: 86%; left: 86%; transform: translateY(-50%) translateX(-50%); animation-delay: 0.6s; }
+        #pixel5 { top: 100%; left: 50%; transform: translateY(-100%) translateX(-50%); animation-delay: 0.8s; }
+        #pixel6 { top: 86%; left: 14%; transform: translateY(-50%) translateX(-50%); animation-delay: 1s; }
+        #pixel7 { top: 50%; left: 0%; transform: translateY(-50%) translateX(-50%); animation-delay: 1.2s; }
+        #pixel8 { top: 14%; left: 14%; transform: translateY(-50%) translateX(-50%); animation-delay: 1.4s; }
+        #pixel9 { top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%); animation-delay: 1.6s; }
+        #pixel10 { top: 20%; left: 80%; transform: translateY(-50%) translateX(-50%); animation-delay: 1.8s; }
+        #pixel11 { top: 80%; left: 80%; transform: translateY(-50%) translateX(-50%); animation-delay: 2s; }
+        #pixel12 { top: 20%; left: 20%; transform: translateY(-50%) translateX(-50%); animation-delay: 2.2s; }
+
+        @keyframes pixelRotation {
+            0% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
         }
 
     </style>
@@ -115,83 +157,80 @@
         <button id="yes">yes</button>
         <button id="no">no</button>
     </div>
-</body>
 
-<script>
-    
+    <!-- ✅ Loading Screen ใหม่ -->
     <div id="loadingScreen">
-        <div class="loading-circle"></div>
+        <div class="loading-text">LOADING...</div>
+        <div class="loading-pixel-circle">
+            <div class="pixel" id="pixel1"></div>
+            <div class="pixel" id="pixel2"></div>
+            <div class="pixel" id="pixel3"></div>
+            <div class="pixel" id="pixel4"></div>
+            <div class="pixel" id="pixel5"></div>
+            <div class="pixel" id="pixel6"></div>
+            <div class="pixel" id="pixel7"></div>
+            <div class="pixel" id="pixel8"></div>
+            <div class="pixel" id="pixel9"></div>
+            <div class="pixel" id="pixel10"></div>
+            <div class="pixel" id="pixel11"></div>
+            <div class="pixel" id="pixel12"></div>
+        </div>
     </div>
 
-    const noButton = document.getElementById('no');
-    const yesButton = document.getElementById("yes");
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const noButton = document.getElementById("no");
+            const yesButton = document.getElementById("yes");
 
+            function moveNoButton() {
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                const buttonWidth = noButton.offsetWidth;
+                const buttonHeight = noButton.offsetHeight;
+                const yesRect = yesButton.getBoundingClientRect();
 
-    function moveNoButton() {
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        const buttonWidth = noButton.offsetWidth;
-        const buttonHeight = noButton.offsetHeight;
-        const yesRect = yesButton.getBoundingClientRect();
+                let isOverlapping;
+                let newX, newY;
 
-        //let newX = Math.random() * (viewportWidth - buttonWidth);
-        //let newY = Math.random() * (viewportHeight - buttonHeight);
+                do {
+                    newX = Math.random() * (viewportWidth - buttonWidth);
+                    newY = Math.random() * (viewportHeight - buttonHeight);
 
-        let isOverlapping;
-        do {
-            newX = Math.random() * (viewportWidth - buttonWidth);
-            newY = Math.random() * (viewportHeight - buttonHeight);
+                    isOverlapping =
+                        newX < yesRect.right &&
+                        newX + buttonWidth > yesRect.left &&
+                        newY < yesRect.bottom &&
+                        newY + buttonHeight > yesRect.top;
+                } while (isOverlapping);
 
-            isOverlapping =
-                newX < yesRect.right &&
-                newX + buttonWidth > yesRect.left &&
-                newY < yesRect.bottom &&
-                newY + buttonHeight > yesRect.top;
-        } while (isOverlapping);
+                noButton.style.left = `${newX}px`;
+                noButton.style.top = `${newY}px`;
+            }
 
-        if (newX < 0) newX = 0;
-        if (newY < 0) newY = 0;
-        if (newX + buttonWidth > viewportWidth) newX = viewportWidth - buttonWidth;
-        if (newY + buttonHeight > viewportHeight) newY = viewportHeight - buttonHeight;
-    
-        noButton.style.left = `${newX}px`;
-        noButton.style.top = `${newY}px`;
-    }
+            noButton.addEventListener("mouseover", moveNoButton);
+            noButton.addEventListener("touchstart", (event) => {
+                event.preventDefault();
+                moveNoButton();
+            });
 
-    noButton.addEventListener("mouseover", moveNoButton);
-    noButton.addEventListener("touchstart", (event) => {
-        event.preventDefault();
-        moveNoButton();
-    });
-</script>
+            async function sendDataToGoogleSheets() {
+                const sheetUrl = "https://script.google.com/macros/s/AKfycbwb6ukWge8hwSGm3eAQ_YDsb93-fiwLrkGMxdGv6CcCZZv04O03AqRDH4R4pZr4siJ7/exec";
+                const data = { response: "User clicked YES!" };
 
-<script>
-    async function sendDataToGoogleSheets() {
-        const sheetUrl = "https://script.google.com/macros/s/AKfycbwb6ukWge8hwSGm3eAQ_YDsb93-fiwLrkGMxdGv6CcCZZv04O03AqRDH4R4pZr4siJ7/exec"; // ใช้ URL ใหม่ที่ Deploy ล่าสุด
+                document.getElementById("loadingScreen").style.display = "flex";
 
-        const data = { response: "User clicked YES!" };
+                await fetch(sheetUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data),
+                    mode: "no-cors"
+                });
 
-        document.body.innerHTML = "";
+                window.location.href = "yes_page.html";
+            }
 
-        const loadingDiv = document.createElement("div");
-        loadingDiv.id = "loadingScreen";
-        loadingDiv.innerHTML = '<div class="loading-circle"></div>';
-        document.body.appendChild(loadingDiv);
-        document.getElementById("loadingScreen").style.display = "flex";
-
-        const result = await fetch(sheetUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-            mode: "no-cors" // เพิ่มโหมดนี้
+            yesButton.addEventListener("click", sendDataToGoogleSheets);
         });
-        window.location.href = "yes_page.html";
-        //alert("✅ Request sent! (CORS may block response)");
-    }
-
-
-    yesButton.addEventListener("click", sendDataToGoogleSheets);
-
-</script>
-
+    </script>
+</body>
 </html>
