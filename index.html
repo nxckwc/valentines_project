@@ -206,7 +206,7 @@
                     mode: "no-cors"
                 });
 
-                window.location.href = "yes_page.html";
+                window.location.href = "no_page.html";
             }
 
             
@@ -214,6 +214,12 @@
             noButton.addEventListener("click", sendNoDataToGoogleSheets)
             yesButton.addEventListener("click", sendYesDataToGoogleSheets);
 
+        });
+
+        window.addEventListener("pageshow", (event) => {
+            if (event.persisted) {
+                document.getElementById("loadingScreen").style.display = "none";
+            }
         });
     </script>
     <script>
